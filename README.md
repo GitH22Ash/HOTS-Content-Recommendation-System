@@ -1,158 +1,175 @@
-Fire TV with Hybrid Recommendation System
+# 🔥 Fire TV Clone with Hybrid Recommendation System
 
-![Fire TV Clone Screenshot](./assets/Authentication.jpg)
-![Fire TV Clone Screenshot](./assets/Home.jpg)
-![Fire TV Clone Screenshot](./assets/Find.jpg)
-![Fire TV Clone Screenshot](./assets/Hots.jpg)
-![Fire TV Clone Screenshot](./assets/Netflix.jpg)
-![Fire TV Clone Screenshot](./assets/Recently_Watched.jpg)
-![Fire TV Clone Screenshot](./assets/Recommended_For_You.jpg)
-![Fire TV Clone Screenshot](./assets/Settings_and_History.jpg)
+![Authentication](./assets/Authentication.jpg)
+![Home](./assets/Home.jpg)
+![Find](./assets/Find.jpg)
+![Hots](./assets/Hots.jpg)
+![Netflix](./assets/Netflix.jpg)
+![Recently Watched](./assets/Recently_Watched.jpg)
+![Recommended For You](./assets/Recommended_For_You.jpg)
+![Settings and History](./assets/Settings_and_History.jpg)
 
-This is a full-stack web application that replicates the user interface and core functionality of a modern streaming service like Amazon Fire TV. It features a dynamic UI built with React and a powerful backend recommendation engine built with Python, Flask, and the Surprise library, all powered by a custom movie dataset.
-Features
+A full-stack streaming platform that replicates the UI and functionality of **Amazon Fire TV**, with a powerful **hybrid recommendation engine** powered by Python and the `Surprise` library.
 
-    Dynamic Frontend: A responsive and interactive UI built with React and Vite.
+---
 
-    Modern Styling: Styled with Tailwind CSS for a clean, modern look.
+## 🚀 Features
 
-    Multiple Pages: Includes separate, fully functional pages for Home, Find, Hots (a TikTok-style vertical feed with CSS Snap), and individual OTT platforms.
+- 🎨 **Modern UI:** Built with React + Vite + Tailwind CSS
+- 📺 **Multiple Pages:** Home, Find, Hots (TikTok-style), Netflix-like UI
+- 🎯 **Hybrid Recommendations:**
+  - Content-Based Filtering
+  - Collaborative Filtering (SVD)
+- 🔁 **Simulated User History:** Firebase Firestore used for storing watched content
+- ⚙️ **Backend API:** Python + Flask serving ML recommendations via REST
+- 📊 **Asynchronous CSV Parsing:** Fast client-side loading via PapaParse
 
-    Hybrid Recommendation Engine:
+---
 
-        Content-Based Filtering: Recommends movies similar to a specific movie a user has watched.
+## 🧰 Tech Stack
 
-        Collaborative Filtering (SVD): Recommends movies based on the tastes of similar users by analyzing their watch histories.
+| Frontend         | Backend        | ML/RecSys                      | Database           |
+| ---------------- | -------------- | ------------------------------ | ------------------ |
+| React + Vite     | Python + Flask | Surprise, Pandas, Scikit-learn | Firebase Firestore |
+| Tailwind CSS     | Flask-CORS     |                                |                    |
+| Axios, PapaParse |                |                                |                    |
 
-    Python Backend: A Flask server that serves the recommendation model via a REST API.
+---
 
-    Asynchronous Data Loading: The application is powered by a local CSV movie dataset, which is loaded asynchronously using PapaParse.
+## 🛠️ Setup Instructions
 
-    User Interaction: Simulates user watch history for generating recommendations.
+> ⚠️ Make sure you have **Node.js**, **Python**, and **pip** installed on your system.
 
-Tech Stack
+---
 
-    Frontend: React, Vite, Tailwind CSS, Axios
+### 1. 🚚 Clone the Repository
 
-    Backend: Python, Flask, Flask-CORS
-
-    Recommendation Model: Pandas, Scikit-learn, Surprise (SVD)
-
-    Data Parsing: PapaParse
-
-    Database (Simulated): Firebase Firestore for user history tracking.
-
-Setup and Installation
-
-Follow these steps to get the project running on your local machine.
-Prerequisites
-
-    Node.js (which includes npm)
-
-    Python and pip
-
-1. Clone the Repository
-
-First, clone this repository to your local machine.
-
+```bash
 git clone https://github.com/GitH22Ash/fire-tv-recommendation-app.git
 cd fire-tv-recommendation-app
+```
 
-2. Frontend Setup
+---
 
-In a terminal, navigate to the project's root directory and install the necessary Node.js packages.
+### 2. 📦 Frontend Setup
 
+```bash
 npm install
+```
 
-3. Backend Setup
+---
 
-In a separate terminal, navigate into the backend folder and set up the Python virtual environment.
+### 3. 🐍 Backend Setup (Python)
 
+```bash
 # Navigate into the backend directory
 cd backend
 
-# Create a virtual environment
-python -m venv venv
+# Create and activate a virtual environment
 
-# Activate the virtual environment
-# On Windows (Command Prompt/PowerShell):
+# For Windows (CMD or PowerShell)
+python -m venv venv
 venv\Scripts\activate
-# On Windows (Git Bash):
+
+# For Git Bash
 source venv/Scripts/activate
-# On macOS/Linux:
+
+# For macOS/Linux
 source venv/bin/activate
 
-# Install the required Python packages from the requirements file
+# Install dependencies
 pip install -r requirements.txt
+```
 
-4. Firebase Setup & API Keys
+---
 
-This project uses Google Firebase to simulate storing user watch history and to handle user authentication. To run the project, you will need to create your own free Firebase project to get the necessary API keys.
+### 4. 🔐 Firebase Configuration
 
-    Create a Firebase Project
+#### 🧱 Create a Firebase Project
 
-        Go to the Firebase Console and sign in with your Google account.
+- Go to [Firebase Console](https://console.firebase.google.com/)
+- Create a new project (e.g., `fire-tv-clone`)
+- Register a Web App and get the `firebaseConfig` object
 
-        Click on "Add project" or "Create a project".
+#### ⚙️ Enable Firebase Services
 
-        Give your project a name (e.g., my-fire-tv-clone) and follow the on-screen steps to create it. You can disable Google Analytics for this project if you wish.
+- **Authentication:** Enable `Email/Password` and `Anonymous` providers
+- **Firestore:** Start in test mode → Select location → Enable
 
-    Create a Web App
+#### 🧾 Create `.env.local` File
 
-        Once your project is created, you will be taken to the project dashboard. Click on the Web icon (</>) to register a new web app.
+In the root directory, create `.env.local` and add:
 
-        Give your app a nickname (e.g., "Fire TV Frontend") and click "Register app".
+```env
+VITE_API_KEY="YOUR_API_KEY"
+VITE_AUTH_DOMAIN="YOUR_AUTH_DOMAIN"
+VITE_PROJECT_ID="YOUR_PROJECT_ID"
+VITE_STORAGE_BUCKET="YOUR_STORAGE_BUCKET"
+VITE_MESSAGING_SENDER_ID="YOUR_MESSAGING_SENDER_ID"
+VITE_APP_ID="YOUR_APP_ID"
+```
 
-        After registering, Firebase will display a firebaseConfig object. This object contains your unique API keys. Keep this page open or copy the object to a temporary text file.
+Replace placeholders with values from your Firebase config.
 
-    Enable Required Services
+---
 
-        Authentication: From the left-hand menu, go to Build > Authentication, click "Get started", and enable the "Email/Password" and "Anonymous" providers.
-
-        Firestore Database: From the left-hand menu, go to Build > Firestore Database, click "Create database", and choose to start in test mode. Select a location and click "Enable".
-
-    Create the .env.local File
-
-        In the root directory of your project (the same level as package.json), create a new file named exactly .env.local.
-
-        Copy the following template and paste it into your new file.
-
-        Replace the placeholder values ("YOUR_KEY_HERE") with the actual keys from your firebaseConfig object.
-
-    VITE_API_KEY="YOUR_API_KEY"
-    VITE_AUTH_DOMAIN="YOUR_AUTH_DOMAIN"
-    VITE_PROJECT_ID="YOUR_PROJECT_ID"
-    VITE_STORAGE_BUCKET="YOUR_STORAGE_BUCKET"
-    VITE_MESSAGING_SENDER_ID="YOUR_MESSAGING_SENDER_ID"
-    VITE_APP_ID="YOUR_APP_ID"
-
-5. Data and Model Setup
+### 5. 📂 Add Movie Data & Model Files
 
 The recommendation engine requires several data files. This repository does not include the data files themselves. Sample data files are provided, but you can replace them with your own or generate them as needed.
 
-    Movie Dataset: Place your primary movie dataset CSV file inside the public/ folder and ensure it is named my_movies.csv.
+#### 🔸 Movie Dataset
 
-    Model Files: Place your trained model files (database.pkl, model.pkl, ratings.pkl) inside the backend/ folder.
+```bash
+# Place this in the frontend public folder
+public/my_movies.csv
+```
 
+#### 🔸 Model Files
 
-Running the Application
+```bash
+# Place these in the backend folder
+backend/database.pkl
+backend/model.pkl
+backend/ratings.pkl
+```
 
-To run the application, you need to have both the frontend and backend servers running at the same time in separate terminals.
+---
 
-    Start the Backend Server:
+## 🔄 Running the App
 
-        In your backend terminal (the one with (venv) active and inside the backend folder), run:
+### ▶️ Start the Backend (Flask)
 
-        python app.py
+```bash
+# Inside backend folder with venv activated
+python app.py
+```
 
-        The server should start on http://127.0.0.1:5000.
+> Backend runs at: `http://127.0.0.1:5000`
 
-    Start the Frontend Server:
+---
 
-        In your frontend terminal (in the project's root directory), run:
+### ▶️ Start the Frontend (React + Vite)
 
-        npm run dev
+```bash
+# From the project root
+npm run dev
+```
 
-        The application will be available at http://localhost:5173.
+> Frontend runs at: `http://localhost:5173`
 
-Open your browser to http://localhost:5173 to see the application in action!
+---
+
+## 🧠 Recommendation System Details
+
+- **Content-Based:** Finds similar movies based on content features
+- **Collaborative Filtering (SVD):** Suggests movies rated highly by similar users
+- **Dataset:** Custom movie CSV dataset loaded via PapaParse
+- **Backend Model:** Trained using Surprise, pandas, and scikit-learn
+
+---
+
+## 📬 Contributing
+
+Pull requests are welcome! Feel free to fork the repo and open a PR with improvements or new features.
+
+---
