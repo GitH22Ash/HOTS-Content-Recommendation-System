@@ -3,7 +3,7 @@ from flask_cors import CORS
 import pickle
 from surprise import Dataset, Reader
 import numpy as np
-import random # Import the random module
+import random 
 
 # --- Step 1: Import your custom recommendation functions ---
 from recommender import content_based_recommendation, user_based_recommendation
@@ -26,7 +26,7 @@ except FileNotFoundError as e:
     print(f"Error loading files: {e}. Make sure ratings.pkl, model.pkl, and database.pkl are in the 'backend' folder.")
     exit()
 
-# --- Step 3: Pre-process data needed for the recommendation models ---
+#Step 3: Pre-process data needed for the recommendation models ---
 print("Pre-processing data for Surprise model...")
 all_movie_ids = set(ratings_df['id'].unique())
 reader = Reader(rating_scale=(1, 5))
