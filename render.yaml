@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: fire-tv-recommendation-api
+    runtime: python
+    region: oregon
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 1 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
+      - key: ALLOWED_ORIGINS
+        value: https://hots-content-recommendation-system.vercel.app
+      - key: TMDB_API_KEY
+        sync: false
+    plan: free
+    healthCheckPath: /api/health

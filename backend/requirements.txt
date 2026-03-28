@@ -3,6 +3,7 @@ click==8.2.1
 colorama==0.4.6
 Flask==3.1.1
 flask-cors==6.0.1
+gunicorn==23.0.0
 itsdangerous==2.2.0
 Jinja2==3.1.6
 joblib==1.5.1
@@ -11,11 +12,11 @@ numpy==1.26.4
 pandas==2.3.0
 python-dateutil==2.9.0.post0
 pytz==2025.2
+requests==2.32.3
 scikit-learn==1.7.0
 scikit-surprise==1.1.4
 scipy==1.15.3
 six==1.17.0
-surprise==0.1
 threadpoolctl==3.6.0
 tzdata==2025.2
 Werkzeug==3.1.3

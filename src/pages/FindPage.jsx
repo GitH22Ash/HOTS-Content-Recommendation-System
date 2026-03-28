@@ -18,7 +18,7 @@ const FindPage = React.memo(({ onItemClick, mockMovies }) => {
         'Feeling Bored', 'Feeling Scared'
     ];
 
-    const moodToGenreMapping = {
+    const moodToGenreMapping = useMemo(() => ({
         'feeling sad': ['comedy', 'drama', 'family'],
         'feeling happy': ['comedy', 'action', 'music'],
         'feeling stressed': ['comedy', 'family', 'fantasy', 'science fiction'],
@@ -27,7 +27,7 @@ const FindPage = React.memo(({ onItemClick, mockMovies }) => {
         'feeling nostalgic': ['history', 'drama'],
         'feeling bored': ['thriller', 'mystery', 'action', 'adventure'],
         'feeling scared': ['comedy', 'animation', 'family']
-    };
+    }), []);
 
     const genresForFilter = useMemo(() => ['All Genres', ...getUniqueItems(mockMovies, 'genre')], [mockMovies]);
     const languagesForFilter = useMemo(() => ['All Languages', ...getUniqueItems(mockMovies, 'language')], [mockMovies]);
