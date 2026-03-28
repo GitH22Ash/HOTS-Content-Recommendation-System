@@ -1,0 +1,44 @@
+Collecting scikit-surprise==1.1.4
+  Using cached scikit_surprise-1.1.4-cp312-cp312-win_amd64.whl
+Collecting numpy==1.26.4
+  Obtaining dependency information for numpy==1.26.4 from https://files.pythonhosted.org/packages/16/2e/86f24451c2d530c88daf997cb8d6ac622c1d40d19f5a031ed68a4b73a374/numpy-1.26.4-cp312-cp312-win_amd64.whl.metadata
+  Downloading numpy-1.26.4-cp312-cp312-win_amd64.whl.metadata (61 kB)
+     -------------------------------------- 61.0/61.0 kB 651.3 kB/s eta 0:00:00
+Collecting pandas==2.2.3
+  Obtaining dependency information for pandas==2.2.3 from https://files.pythonhosted.org/packages/29/d4/1244ab8edf173a10fd601f7e13b9566c1b525c4f365d6bee918e68381889/pandas-2.2.3-cp312-cp312-win_amd64.whl.metadata
+  Downloading pandas-2.2.3-cp312-cp312-win_amd64.whl.metadata (19 kB)
+Collecting joblib>=1.2.0 (from scikit-surprise==1.1.4)
+  Obtaining dependency information for joblib>=1.2.0 from https://files.pythonhosted.org/packages/7b/91/984aca2ec129e2757d1e4e3c81c3fcda9d0f85b74670a094cc443d9ee949/joblib-1.5.3-py3-none-any.whl.metadata
+  Downloading joblib-1.5.3-py3-none-any.whl.metadata (5.5 kB)
+Collecting scipy>=1.6.0 (from scikit-surprise==1.1.4)
+  Obtaining dependency information for scipy>=1.6.0 from https://files.pythonhosted.org/packages/a2/84/dc08d77fbf3d87d3ee27f6a0c6dcce1de5829a64f2eae85a0ecc1f0daa73/scipy-1.17.1-cp312-cp312-win_amd64.whl.metadata
+  Downloading scipy-1.17.1-cp312-cp312-win_amd64.whl.metadata (60 kB)
+     ---------------------------------------- 61.0/61.0 kB 3.2 MB/s eta 0:00:00
+Collecting python-dateutil>=2.8.2 (from pandas==2.2.3)
+  Obtaining dependency information for python-dateutil>=2.8.2 from https://files.pythonhosted.org/packages/ec/57/56b9bcc3c9c6a792fcbaf139543cee77261f3651ca9da0c93f5c1221264b/python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata
+  Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl.metadata (8.4 kB)
+Collecting pytz>=2020.1 (from pandas==2.2.3)
+  Obtaining dependency information for pytz>=2020.1 from https://files.pythonhosted.org/packages/10/99/781fe0c827be2742bcc775efefccb3b048a3a9c6ce9aec0cbf4a101677e5/pytz-2026.1.post1-py2.py3-none-any.whl.metadata
+  Downloading pytz-2026.1.post1-py2.py3-none-any.whl.metadata (22 kB)
+Collecting tzdata>=2022.7 (from pandas==2.2.3)
+  Obtaining dependency information for tzdata>=2022.7 from https://files.pythonhosted.org/packages/c7/b0/003792df09decd6849a5e39c28b513c06e84436a54440380862b5aeff25d/tzdata-2025.3-py2.py3-none-any.whl.metadata
+  Downloading tzdata-2025.3-py2.py3-none-any.whl.metadata (1.4 kB)
+Collecting six>=1.5 (from python-dateutil>=2.8.2->pandas==2.2.3)
+  Obtaining dependency information for six>=1.5 from https://files.pythonhosted.org/packages/b7/ce/149a00dd41f10bc29e5921b496af8b574d8413afcd5e30dfa0ed46c2cc5e/six-1.17.0-py2.py3-none-any.whl.metadata
+  Using cached six-1.17.0-py2.py3-none-any.whl.metadata (1.7 kB)
+Downloading numpy-1.26.4-cp312-cp312-win_amd64.whl (15.5 MB)
+   ---------------------------------------- 15.5/15.5 MB 3.8 MB/s eta 0:00:00
+Downloading pandas-2.2.3-cp312-cp312-win_amd64.whl (11.5 MB)
+   ---------------------------------------- 11.5/11.5 MB 3.8 MB/s eta 0:00:00
+Downloading joblib-1.5.3-py3-none-any.whl (309 kB)
+   ---------------------------------------- 309.1/309.1 kB 6.4 MB/s eta 0:00:00
+Using cached python_dateutil-2.9.0.post0-py2.py3-none-any.whl (229 kB)
+Downloading pytz-2026.1.post1-py2.py3-none-any.whl (510 kB)
+   ---------------------------------------- 510.5/510.5 kB 4.6 MB/s eta 0:00:00
+Downloading scipy-1.17.1-cp312-cp312-win_amd64.whl (36.5 MB)
+   ---------------------------------------- 36.5/36.5 MB 3.8 MB/s eta 0:00:00
+Downloading tzdata-2025.3-py2.py3-none-any.whl (348 kB)
+   --------------------------------------- 348.5/348.5 kB 10.9 MB/s eta 0:00:00
+Using cached six-1.17.0-py2.py3-none-any.whl (11 kB)
+Installing collected packages: pytz, tzdata, six, numpy, joblib, scipy, python-dateutil, scikit-surprise, pandas
+Successfully installed joblib-1.5.3 numpy-1.26.4 pandas-2.2.3 python-dateutil-2.9.0.post0 pytz-2026.1.post1 scikit-surprise-1.1.4 scipy-1.17.1 six-1.17.0 tzdata-2025.3

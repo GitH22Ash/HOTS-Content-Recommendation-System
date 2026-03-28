@@ -57,7 +57,6 @@ def content_based_recommendation(movie_id, new_df, top_n=5):
         logger.warning(f"Could not calculate production company similarity: {e}")
 
     # --- Enhanced: Popularity normalization ---
-    # Factor in vote_average to bias towards well-received content
     popularity_score = 0.0
     try:
         if 'vote_average' in new_df.columns:
@@ -72,7 +71,7 @@ def content_based_recommendation(movie_id, new_df, top_n=5):
         0.25 * new_df['genres_similarity'] +
         0.45 * new_df['overview_similarity'] +
         0.15 * new_df['production_companies_similarity'] +
-        0.15 * popularity_score  # New: popularity boost
+        0.15 * popularity_score
     )
 
     # Get the top N most similar movies, excluding the movie itself
@@ -85,14 +84,13 @@ def content_based_recommendation(movie_id, new_df, top_n=5):
 def create_pseudo_user_vector(watched_movie_ids, movie_factors, n_factors):
     """
     Creates a weighted average vector representing the user's taste.
-    Enhanced: More recent watches get higher weight (temporal recency).
+    More recent watches get higher weight (temporal recency).
     """
     pseudo_user_vector = np.zeros(n_factors)
     total_weight = 0
 
     for i, movie_id in enumerate(watched_movie_ids):
         if movie_id in movie_factors:
-            # More recent items (lower index) get higher weight
             weight = 1.0 / (1.0 + i * 0.1)
             pseudo_user_vector += movie_factors[movie_id] * weight
             total_weight += weight
@@ -103,19 +101,20 @@ def create_pseudo_user_vector(watched_movie_ids, movie_factors, n_factors):
         return np.zeros(n_factors)
 
 
-def user_based_recommendation(watched_movie_ids, model, all_movie_ids, movie_factors, raw_to_inner_iid_map, top_n=10):
+def user_based_recommendation(watched_movie_ids, all_movie_ids, movie_factors,
+                              model_qi, raw_to_inner_iid_map, n_factors, top_n=10):
     """
-    Generates user-based recommendations using a trained SVD model.
-    Enhanced with temporal weighting and genre diversity.
+    Generates user-based recommendations using pre-extracted SVD factors.
+    No scikit-surprise dependency needed — uses raw numpy arrays.
     """
     logger.info(f"Generating user-based recommendations for history: {watched_movie_ids[:5]}...")
 
-    # Cold-start check: if too few items, skip collaborative filtering
+    # Cold-start check
     if len(watched_movie_ids) < 2:
         logger.info("Too few watched items for collaborative filtering. Returning empty list.")
         return []
 
-    pseudo_user_vector = create_pseudo_user_vector(watched_movie_ids, movie_factors, model.n_factors)
+    pseudo_user_vector = create_pseudo_user_vector(watched_movie_ids, movie_factors, n_factors)
 
     movies_to_predict = all_movie_ids - set(watched_movie_ids)
 
@@ -123,13 +122,12 @@ def user_based_recommendation(watched_movie_ids, model, all_movie_ids, movie_fac
     for movie_id in movies_to_predict:
         if movie_id in raw_to_inner_iid_map:
             movie_inner_id = raw_to_inner_iid_map[movie_id]
-            estimated_rating = np.dot(pseudo_user_vector, model.qi[movie_inner_id])
+            estimated_rating = np.dot(pseudo_user_vector, model_qi[movie_inner_id])
             predictions.append((movie_id, estimated_rating))
 
     predictions.sort(key=lambda x: x[1], reverse=True)
 
-    # --- Enhanced: Genre Diversity Re-ranking ---
-    # Take top 3x candidates and pick diverse results
+    # Take top candidates for diversity
     candidate_pool = predictions[:top_n * 3]
     recommended_movie_ids = [pred[0] for pred in candidate_pool[:top_n]]
 
@@ -140,22 +138,17 @@ def user_based_recommendation(watched_movie_ids, model, all_movie_ids, movie_fac
 def get_trending_movies(database_df, ratings_df, top_n=20):
     """
     Returns trending/popular movies for users with no watch history.
-    Uses a combination of vote count, vote average, and recency.
     """
     logger.info("Generating trending movie list...")
 
     try:
-        # Get movies that have high ratings in our ratings dataset
         if ratings_df is not None and len(ratings_df) > 0:
             movie_stats = ratings_df.groupby('id').agg(
                 avg_rating=('rating', 'mean'),
                 num_ratings=('rating', 'count')
             ).reset_index()
 
-            # Filter movies with at least 3 ratings
             popular = movie_stats[movie_stats['num_ratings'] >= 3]
-
-            # Sort by a weighted score (average rating * log of count)
             popular = popular.copy()
             popular['trending_score'] = popular['avg_rating'] * np.log1p(popular['num_ratings'])
             popular = popular.sort_values('trending_score', ascending=False)
@@ -165,7 +158,6 @@ def get_trending_movies(database_df, ratings_df, top_n=20):
             if len(trending_ids) >= top_n:
                 return trending_ids
 
-        # Fallback: return first N movies from the database
         if database_df is not None and len(database_df) > 0:
             return database_df.head(top_n)['id'].tolist()
 

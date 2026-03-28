@@ -21,8 +21,10 @@ dist-ssr
 
 # Backend (Python)
 backend/venv
+backend/venv312
 backend/__pycache__
 backend/*.pyc
+backend/preprocess_model.py
 
 # NOTE: backend/*.pkl files are intentionally TRACKED (needed for Render deployment)
 # They contain ML model weights only — no credentials or sensitive data

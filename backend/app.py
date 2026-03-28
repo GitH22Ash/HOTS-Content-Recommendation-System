@@ -32,45 +32,37 @@ logger.info("Loading data and models...")
 try:
     with open("ratings.pkl", 'rb') as file:
         ratings_df = pickle.load(file)
-    with open("model.pkl", 'rb') as file:
-        model = pickle.load(file)
     with open("database.pkl", 'rb') as file:
         database_df = pickle.load(file)
-    logger.info("All files loaded successfully.")
+
+    # Load pre-processed model data (no scikit-surprise needed!)
+    with open("model_processed.pkl", 'rb') as file:
+        model_data = pickle.load(file)
+
+    all_movie_ids = model_data['all_movie_ids']
+    raw_to_inner_iid_map = model_data['raw_to_inner_iid_map']
+    movie_factors = model_data['movie_factors']
+    model_qi = model_data['qi']
+    model_n_factors = model_data['n_factors']
+
+    logger.info(f"All files loaded successfully. {len(all_movie_ids)} movies, {model_n_factors} factors.")
+
 except FileNotFoundError as e:
-    logger.error(f"Error loading files: {e}. Make sure ratings.pkl, model.pkl, and database.pkl are in the 'backend' folder.")
-    # Don't exit — let the health check report the error
+    logger.error(f"Error loading files: {e}.")
     ratings_df = None
-    model = None
     database_df = None
-
-# Step 3: Pre-process data needed for the recommendation models ---
-if ratings_df is not None and model is not None:
-    logger.info("Pre-processing data for Surprise model...")
-    from surprise import Dataset, Reader
-    all_movie_ids = set(ratings_df['id'].unique())
-    reader = Reader(rating_scale=(1, 5))
-    data = Dataset.load_from_df(ratings_df[['userId', 'id', 'rating']], reader)
-    trainset = data.build_full_trainset()
-
-    raw_to_inner_iid_map = {trainset.to_raw_iid(inner_id): inner_id for inner_id in trainset.all_items()}
-
-    movie_factors = {
-        movie_raw_id: model.qi[raw_to_inner_iid_map[movie_raw_id]]
-        for movie_raw_id in all_movie_ids if movie_raw_id in raw_to_inner_iid_map
-    }
-    logger.info("Pre-processing complete. Server is ready.")
-else:
+    model_data = None
     all_movie_ids = set()
     raw_to_inner_iid_map = {}
     movie_factors = {}
-    logger.warning("Models not loaded. Recommendation endpoints will return errors.")
+    model_qi = None
+    model_n_factors = 0
 
 
 # --- Health Check Endpoint ---
 @app.route('/api/health', methods=['GET'])
 def health_check():
-    models_loaded = ratings_df is not None and model is not None and database_df is not None
+    models_loaded = ratings_df is not None and database_df is not None and model_data is not None
     return jsonify({
         "status": "healthy" if models_loaded else "degraded",
         "models_loaded": models_loaded,
@@ -83,7 +75,7 @@ def health_check():
 @app.route('/api/recommend', methods=['POST'])
 def recommend():
     try:
-        if database_df is None or model is None:
+        if database_df is None or model_data is None:
             return jsonify({"error": "Models not loaded"}), 503
 
         data = request.get_json()
@@ -96,7 +88,8 @@ def recommend():
         last_watched_id = user_history_ids[0]
         content_recs = content_based_recommendation(last_watched_id, database_df, top_n=5)
         user_recs = user_based_recommendation(
-            user_history_ids, model, all_movie_ids, movie_factors, raw_to_inner_iid_map, top_n=5
+            user_history_ids, all_movie_ids, movie_factors, model_qi,
+            raw_to_inner_iid_map, model_n_factors, top_n=5
         )
 
         combined_recs = list(dict.fromkeys(content_recs + user_recs))

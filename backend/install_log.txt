@@ -1,0 +1,6 @@
+Collecting scikit-surprise==1.1.4
+  Using cached scikit_surprise-1.1.4.tar.gz (154 kB)
+  Installing build dependencies: started
+  Installing build dependencies: finished with status 'done'
+  Getting requirements to build wheel: started
+  Getting requirements to build wheel: finished with status 'error'
