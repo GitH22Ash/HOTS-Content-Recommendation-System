@@ -81,9 +81,9 @@ export const getMovies = () => {
 };
 
 export const featuredContentDefault = {
-  id: 'f1', title: 'Welcome to Fire TV Clone', description: 'Explore a world of entertainment.',
-  imageUrl: 'https://placehold.co/1280x720/1A202C/FFFFFF?text=Fire+TV+Home&fontsize=70',
-  logoUrl: 'https://placehold.co/200x100/E50914/FFFFFF?text=FIRE+TV', type: 'feature'
+  id: 'f1', title: 'Welcome to HOTS - Content Recommendation System', description: 'Explore a world of entertainment.',
+  imageUrl: 'https://placehold.co/1280x720/1A202C/FFFFFF?text=HOTS+Home&fontsize=70',
+  logoUrl: '/logo.png', type: 'feature'
 };
 
 export const mockLiveChannels = [ { id: 'live1', name: 'News Now', currentShow: 'Evening News Bulletin', genre: 'News', logo: 'https://placehold.co/100x60/FF6347/FFFFFF?text=News', type: 'live'} ];

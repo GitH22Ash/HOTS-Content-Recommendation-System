@@ -1,4 +1,4 @@
-# 🔥 Fire TV Clone with Hybrid Recommendation System
+# 🔥 HOTS - Content Recommendation System
 
 ![Authentication](./assets/Authentication.jpg)
 ![Home](./assets/Home.jpg)
@@ -9,7 +9,7 @@
 ![Recommended For You](./assets/Recommended_For_You.jpg)
 ![Settings and History](./assets/Settings_and_History.jpg)
 
-A full-stack streaming platform that replicates the UI and functionality of **Amazon Fire TV**, with a powerful **hybrid recommendation engine** powered by Python and the `Surprise` library.
+A full-stack streaming platform for the **HOTS - Content Recommendation System**, with a powerful **hybrid recommendation engine** powered by Python and the `Surprise` library.
 
 ---
 
@@ -88,7 +88,7 @@ pip install -r requirements.txt
 #### 🧱 Create a Firebase Project
 
 - Go to [Firebase Console](https://console.firebase.google.com/)
-- Create a new project (e.g., `fire-tv-clone`)
+- Create a new project (e.g., `hots-recommendation`)
 - Register a Web App and get the `firebaseConfig` object
 
 #### ⚙️ Enable Firebase Services

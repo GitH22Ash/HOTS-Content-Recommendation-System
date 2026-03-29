@@ -20,6 +20,7 @@ const Navigation = React.memo(({ currentPage, setCurrentPage, onAppIconClick, on
     <nav className="bg-black bg-opacity-80 p-3 md:p-4 sticky top-0 z-50">
       <div className="container mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-2 md:space-x-4">
+          <img src="/logo.png" alt="HOTS Logo" className="h-6 md:h-8 w-auto mr-2 md:mr-4 cursor-pointer" onClick={() => setCurrentPage('Home')} />
           <button onClick={onProfileClick} className="p-1 rounded-full text-red-500 hover:text-red-400 transition-colors" aria-label="User Profile">
             <UserCircle size={28} />
           </button>

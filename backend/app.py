@@ -67,7 +67,7 @@ def health_check():
         "status": "healthy" if models_loaded else "degraded",
         "models_loaded": models_loaded,
         "total_movies": len(all_movie_ids),
-        "message": "Fire TV Recommendation API is running"
+        "message": "HOTS Recommendation API is running"
     }), 200 if models_loaded else 503
 
 

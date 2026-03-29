@@ -21,7 +21,7 @@ import HotsPage from './pages/HotsPage';
 import { getMovies, featuredContentDefault } from './data/mockData';
 
 // --- localStorage helpers for view history persistence ---
-const HISTORY_STORAGE_KEY = 'fire_tv_view_history';
+const HISTORY_STORAGE_KEY = 'hots_view_history';
 const getStoredHistory = () => {
   try {
     const stored = localStorage.getItem(HISTORY_STORAGE_KEY);
@@ -222,7 +222,7 @@ function App() {
           <div className="absolute inset-0 rounded-full border-4 border-gray-700"></div>
           <div className="absolute inset-0 rounded-full border-4 border-t-red-500 animate-spin"></div>
         </div>
-        <p className="text-xl font-medium text-gray-300">Loading Fire TV</p>
+        <p className="text-xl font-medium text-gray-300">Loading HOTS</p>
         <p className="text-sm text-gray-500 mt-2">Preparing your personalized experience...</p>
       </div>
     );
