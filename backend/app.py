@@ -126,46 +126,55 @@ def trending():
         return jsonify({"error": "An internal server error occurred"}), 500
 
 
-# --- TMDB Trailer Proxy Endpoint ---
+# --- YouTube Search Trailer Endpoint ---
 @app.route('/api/trailers/<int:movie_id>', methods=['GET'])
 def get_trailers(movie_id):
     """
-    Proxy endpoint to fetch movie trailers from TMDB API.
-    This avoids exposing the TMDB API key on the client side.
+    Endpoint to fetch movie trailers from YouTube directly, bypassing TMDB.
     """
     try:
-        tmdb_api_key = os.environ.get('TMDB_API_KEY')
-        if not tmdb_api_key:
-            return jsonify({"error": "TMDB API key not configured", "videos": []}), 200
+        from youtubesearchpython import VideosSearch
+        
+        # Step 1: Lookup the movie title from the loaded dataset
+        if database_df is None:
+            return jsonify({"error": "Database not loaded", "videos": []}), 503
 
-        url = f"https://api.themoviedb.org/3/movie/{movie_id}/videos"
-        params = {"api_key": tmdb_api_key, "language": "en-US"}
-
-        response = requests.get(url, params=params, timeout=5)
-
-        if response.status_code == 200:
-            data = response.json()
-            # Filter for YouTube trailers only
-            trailers = [
-                {
-                    "key": video["key"],
-                    "name": video.get("name", "Trailer"),
-                    "type": video.get("type", "Trailer"),
-                    "site": video.get("site", "YouTube"),
-                }
-                for video in data.get("results", [])
-                if video.get("site") == "YouTube" and video.get("type") in ["Trailer", "Teaser"]
-            ]
-            return jsonify({"videos": trailers, "movie_id": movie_id})
-        else:
-            logger.warning(f"TMDB API returned {response.status_code} for movie {movie_id}")
+        # Safe search by converting both ids to strings
+        matches = database_df[database_df['id'].astype(str) == str(movie_id)]
+        
+        if matches.empty:
+            logger.warning(f"Movie ID {movie_id} not found in local database.")
+            return jsonify({"error": "Movie not found", "videos": []}), 404
+            
+        movie_title = matches.iloc[0]['title']
+        search_query = f"{movie_title} Official Trailer"
+        
+        # Step 2: Extract top video via YoutubeSearch
+        videos_search = VideosSearch(search_query, limit=1)
+        results = videos_search.result()
+        videos_list = results.get('result', [])
+        
+        if not videos_list:
+            logger.warning(f"No YouTube trailers found for '{search_query}'.")
             return jsonify({"videos": [], "movie_id": movie_id})
-
-    except requests.Timeout:
-        logger.warning(f"TMDB API timeout for movie {movie_id}")
-        return jsonify({"videos": [], "movie_id": movie_id})
+            
+        top_video = videos_list[0]
+        
+        # Return identically formatted JSON schema for the React frontend
+        trailer = {
+            "key": top_video.get('id'),
+            "name": top_video.get('title', "Trailer"),
+            "type": "Trailer",
+            "site": "YouTube"
+        }
+        
+        return jsonify({"videos": [trailer], "movie_id": movie_id})
+        
+    except ImportError:
+        logger.error("youtube-search-python is not installed. Please run pip install youtube-search-python")
+        return jsonify({"error": "youtube search module missing", "videos": []}), 500
     except Exception as e:
-        logger.error(f"Error fetching trailers for movie {movie_id}: {e}")
+        logger.error(f"Error fetching YouTube trailers for {movie_id}: {e}")
         return jsonify({"videos": [], "movie_id": movie_id})
 
 
