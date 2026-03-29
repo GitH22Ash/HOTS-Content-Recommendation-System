@@ -250,7 +250,7 @@ function App() {
         {modalMessage}
       </Modal>
       <footer className="text-center p-6 text-gray-500 text-sm border-t border-gray-800">
-        Fire TV Clone - OTT Simulation
+        HOTS-Content Recommendation System
       </footer>
     </div>
   );
