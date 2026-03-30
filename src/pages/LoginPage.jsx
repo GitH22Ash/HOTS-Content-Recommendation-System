@@ -1,6 +1,15 @@
 import React, { useState } from 'react';
 import { supabase, isSupabaseConfigured } from '../services/supabase';
-import { UserPlus, LogIn, LogOut } from 'lucide-react';
+import { UserPlus, LogIn, LogOut, Mail } from 'lucide-react';
+
+const GoogleIcon = () => (
+  <svg className="google-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
+    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+  </svg>
+);
 
 const LoginPage = React.memo(({ setCurrentPage, showNotificationModal }) => {
     const [email, setEmail] = useState('');
@@ -9,7 +18,6 @@ const LoginPage = React.memo(({ setCurrentPage, showNotificationModal }) => {
     const [loading, setLoading] = useState(false);
     const [currentUser, setCurrentUser] = useState(null);
 
-    // Check current user on mount
     React.useEffect(() => {
         if (!isSupabaseConfigured()) return;
         supabase.auth.getUser().then(({ data: { user } }) => {
@@ -46,6 +54,25 @@ const LoginPage = React.memo(({ setCurrentPage, showNotificationModal }) => {
         }
     };
 
+    const handleGoogleSignIn = async () => {
+        if (!isSupabaseConfigured()) {
+            showNotificationModal("Offline Mode", "Authentication is not configured. Running in guest mode.");
+            return;
+        }
+
+        try {
+            const { error } = await supabase.auth.signInWithOAuth({
+                provider: 'google',
+                options: {
+                    redirectTo: window.location.origin,
+                }
+            });
+            if (error) throw error;
+        } catch (error) {
+            showNotificationModal("Error", error.message);
+        }
+    };
+
     const handleSignOut = async () => {
         if (!isSupabaseConfigured()) return;
         try {
@@ -57,20 +84,20 @@ const LoginPage = React.memo(({ setCurrentPage, showNotificationModal }) => {
         }
     };
 
-    // If user is already logged in (and not anonymously)
+    // Logged-in state
     if (currentUser) {
         return (
-            <div className="min-h-[calc(100vh-150px)] flex flex-col items-center justify-center p-4 text-white">
-                <div className="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-orange-500 flex items-center justify-center mb-6 text-3xl font-bold shadow-lg shadow-red-500/20">
+            <div className="auth-wrapper">
+                <div className="profile-avatar">
                     {(currentUser.email || 'U')[0].toUpperCase()}
                 </div>
-                <h1 className="text-3xl font-bold mb-4">Profile</h1>
-                <p className="mb-2">Logged in as: {currentUser.email}</p>
-                <p className="mb-6 text-sm text-gray-400">User ID: {currentUser.id}</p>
-                <button onClick={handleSignOut} className="w-full max-w-xs bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-colors flex items-center justify-center">
-                    <LogOut size={20} className="mr-2" /> Sign Out
+                <h1 className="text-2xl font-bold mb-4 text-white">Profile</h1>
+                <p className="mb-2 text-gray-300">Logged in as: {currentUser.email}</p>
+                <p className="mb-6 text-sm text-gray-500">User ID: {currentUser.id}</p>
+                <button onClick={handleSignOut} className="btn btn--brand w-full max-w-xs">
+                    <LogOut size={18} /> Sign Out
                 </button>
-                <button onClick={() => setCurrentPage('Home')} className="mt-4 text-red-400 hover:text-red-300">
+                <button onClick={() => setCurrentPage('Home')} className="btn btn--ghost mt-4 text-red-400 hover:text-red-300">
                     Back to Home
                 </button>
             </div>
@@ -78,28 +105,57 @@ const LoginPage = React.memo(({ setCurrentPage, showNotificationModal }) => {
     }
 
     return (
-        <div className="min-h-[calc(100vh-150px)] flex flex-col items-center justify-center p-4">
-            <div className="w-full max-w-md bg-gray-800/80 backdrop-blur-sm p-8 rounded-xl shadow-2xl border border-gray-700/50">
-                <h1 className="text-3xl font-bold text-white mb-6 text-center">{isSigningUp ? 'Create Account' : 'Welcome Back'}</h1>
+        <div className="auth-wrapper">
+            <div className="auth-card">
+                <h1 className="auth-card__title">{isSigningUp ? 'Create Account' : 'Welcome Back'}</h1>
+
+                {/* Google OAuth Button */}
+                <button onClick={handleGoogleSignIn} className="btn btn--google w-full mb-2">
+                    <GoogleIcon />
+                    Continue with Google
+                </button>
+
+                {/* Divider */}
+                <div className="auth-divider">
+                    <span>or continue with email</span>
+                </div>
+
+                {/* Email / Password Form */}
                 <form onSubmit={handleSubmit}>
                     <div className="mb-4">
-                        <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="email">Email</label>
-                        <input type="email" id="email" value={email} onChange={(e) => setEmail(e.target.value)} className="shadow appearance-none border border-gray-700 rounded-lg w-full py-3 px-4 text-white bg-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 transition-all" required />
+                        <label className="auth-label" htmlFor="email">Email</label>
+                        <input
+                            type="email"
+                            id="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="auth-input"
+                            placeholder="you@example.com"
+                            required
+                        />
                     </div>
-                    <div className="mb-6">
-                        <label className="block text-gray-300 text-sm font-bold mb-2" htmlFor="password">Password</label>
-                        <input type="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)} className="shadow appearance-none border border-gray-700 rounded-lg w-full py-3 px-4 text-white bg-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-500 transition-all" required />
+                    <div className="mb-5">
+                        <label className="auth-label" htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="auth-input"
+                            placeholder="••••••••"
+                            required
+                        />
                     </div>
-                    <button type="submit" disabled={loading} className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-4 rounded-lg transition-all disabled:opacity-50 flex items-center justify-center shadow-lg shadow-red-600/20 hover:shadow-red-600/40">
+                    <button type="submit" disabled={loading} className="btn btn--brand w-full">
                         {loading ? (
-                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        ) : (isSigningUp ? <><UserPlus size={20} className="mr-2" />Sign Up</> : <><LogIn size={20} className="mr-2" />Login</>)}
+                            <div className="spinner"></div>
+                        ) : (isSigningUp ? <><UserPlus size={18} />Sign Up</> : <><LogIn size={18} />Login</>)}
                     </button>
                 </form>
-                <button onClick={() => setIsSigningUp(!isSigningUp)} className="mt-6 text-center w-full text-red-400 hover:text-red-300 text-sm transition-colors">
+                <button onClick={() => setIsSigningUp(!isSigningUp)} className="mt-5 text-center w-full text-red-400 hover:text-red-300 text-sm transition-colors">
                     {isSigningUp ? 'Already have an account? Login' : "Don't have an account? Sign Up"}
                 </button>
-                <button onClick={() => setCurrentPage('Home')} className="mt-4 text-center w-full text-gray-400 hover:text-gray-300 text-sm transition-colors">Continue as Guest</button>
+                <button onClick={() => setCurrentPage('Home')} className="mt-3 text-center w-full text-gray-500 hover:text-gray-400 text-sm transition-colors">Continue as Guest</button>
             </div>
         </div>
     );

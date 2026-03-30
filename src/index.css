@@ -1,1 +1,1042 @@
+/* ============================================================
+   HOTS — Content Recommendation System
+   Global Stylesheet (Single Source of Truth)
+   ============================================================ */
+
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+/* ============================================================
+   1. DESIGN TOKENS (CSS Custom Properties)
+   ============================================================ */
+:root {
+  /* — Typography — */
+  --font-primary: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+  /* — Brand Colors — */
+  --color-brand-red: #E50914;
+  --color-brand-red-hover: #C10812;
+  --color-brand-orange: #F97316;
+  --color-brand-yellow: #FACC15;
+
+  /* — Platform Colors — */
+  --color-netflix: #E50914;
+  --color-prime: #00A8E1;
+  --color-youtube: #FF0000;
+  --color-jiohotstar: #0c2f6e;
+  --color-disneyplus: #001E62;
+
+  /* — Neutral Palette — */
+  --color-bg-primary: #000000;
+  --color-bg-card: #1a1a2e;
+  --color-bg-elevated: #1f2937;
+  --color-bg-input: #374151;
+  --color-bg-hover: #374151;
+  --color-border-subtle: rgba(255, 255, 255, 0.08);
+  --color-border-light: rgba(255, 255, 255, 0.12);
+  --color-text-primary: #f3f4f6;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
+
+  /* — Spacing Scale — */
+  --space-page-x: clamp(1rem, 3vw, 3rem);
+  --space-section-y: 2.5rem;
+  --space-row-gap: 2.5rem;
+
+  /* — Shadows — */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-elevated: 0 8px 32px rgba(0, 0, 0, 0.6);
+  --shadow-glow-red: 0 4px 20px rgba(229, 9, 20, 0.25);
+
+  /* — Radius — */
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-full: 9999px;
+
+  /* — Transitions — */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 400ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* ============================================================
+   2. BASE RESET & GLOBALS
+   ============================================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-primary);
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  margin: 0;
+  padding: 0;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+/* ============================================================
+   3. SCROLLBAR STYLES
+   ============================================================ */
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ============================================================
+   4. SCROLL SNAP (Hots Page)
+   ============================================================ */
+
+.snap-y {
+  scroll-snap-type: y mandatory;
+}
+.snap-center {
+  scroll-snap-align: center;
+}
+
+/* ============================================================
+   5. NAVIGATION
+   ============================================================ */
+
+.nav-bar {
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border-subtle);
+  padding: 0.625rem var(--space-page-x);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.nav-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  gap: 0.5rem;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+}
+
+.nav-logo {
+  height: 1.75rem;
+  width: auto;
+  cursor: pointer;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+  transition: opacity var(--transition-fast);
+}
+.nav-logo:hover {
+  opacity: 0.85;
+}
+@media (min-width: 768px) {
+  .nav-logo {
+    height: 2rem;
+    margin-right: 1.25rem;
+  }
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.625rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+.nav-item:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+.nav-item--active {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.12);
+}
+@media (min-width: 640px) {
+  .nav-item {
+    font-size: 0.875rem;
+    padding: 0.375rem 0.75rem;
+  }
+}
+
+.nav-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.375rem;
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.nav-icon-btn:hover {
+  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.nav-app-shortcut {
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+}
+.nav-app-shortcut:hover {
+  opacity: 0.8;
+  transform: scale(1.05);
+}
+.nav-app-shortcut img {
+  height: 1.25rem;
+  width: auto;
+  border-radius: var(--radius-sm);
+}
+@media (min-width: 768px) {
+  .nav-app-shortcut img {
+    height: 1.625rem;
+  }
+}
+
+.nav-profile-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: var(--radius-full);
+  color: var(--color-brand-red);
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.nav-profile-btn:hover {
+  color: var(--color-brand-red-hover);
+  transform: scale(1.08);
+}
+
+/* ============================================================
+   6. OTT PLATFORM HEADER
+   ============================================================ */
+
+.ott-header {
+  position: fixed;
+  top: 3.25rem;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  padding: 0.625rem var(--space-page-x);
+  gap: 0.75rem;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.ott-header__logo {
+  height: 1.75rem;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.ott-header__actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.ott-header__category-btn {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.8125rem;
+  padding: 0.3125rem 0.75rem;
+  border-radius: var(--radius-md);
+  border: none;
+  background: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.ott-header__category-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+.ott-header__category-btn--active {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+  color: white;
+}
+
+/* Expandable search in OTT header */
+.ott-search-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.ott-search-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-full);
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  flex-shrink: 0;
+}
+.ott-search-toggle:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.ott-search-input {
+  width: 0;
+  padding: 0;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 0.8125rem;
+  border-radius: var(--radius-md);
+  outline: none;
+  overflow: hidden;
+  opacity: 0;
+  transition: width var(--transition-smooth), opacity var(--transition-base), padding var(--transition-smooth);
+}
+.ott-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+.ott-search-input--expanded {
+  width: 200px;
+  padding: 0.375rem 0.75rem;
+  opacity: 1;
+  margin-right: 0.375rem;
+}
+@media (min-width: 768px) {
+  .ott-search-input--expanded {
+    width: 260px;
+  }
+}
+
+.ott-back-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.85);
+  padding: 0.3125rem 0.75rem;
+  border-radius: var(--radius-md);
+  font-size: 0.8125rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+.ott-back-btn:hover {
+  background: rgba(255, 255, 255, 0.18);
+  color: white;
+}
+
+/* ============================================================
+   7. FILTER BAR (Genre/Language dropdowns)
+   ============================================================ */
+
+.filter-bar {
+  padding: 0.875rem var(--space-page-x);
+  margin-bottom: 0;
+  background: rgba(31, 41, 55, 0.5);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.filter-bar__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  align-items: end;
+}
+@media (min-width: 768px) {
+  .filter-bar__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.filter-label {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.25rem;
+}
+
+.filter-select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: 0.8125rem;
+  outline: none;
+  appearance: none;
+  cursor: pointer;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  padding-right: 2rem;
+}
+.filter-select:focus {
+  border-color: var(--color-brand-red);
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+}
+
+.filter-input {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: 0.8125rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.filter-input::placeholder {
+  color: var(--color-text-muted);
+}
+.filter-input:focus {
+  border-color: var(--color-brand-red);
+  box-shadow: 0 0 0 2px rgba(229, 9, 20, 0.2);
+}
+
+/* ============================================================
+   8. CONTENT CARDS
+   ============================================================ */
+
+.content-card {
+  flex-shrink: 0;
+  margin: 0.375rem;
+  cursor: pointer;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-bg-card);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  width: 10rem;
+}
+.content-card:hover {
+  transform: scale(1.05) translateY(-4px);
+  box-shadow: var(--shadow-elevated);
+}
+.content-card:focus-visible {
+  outline: 2px solid var(--color-brand-red);
+  outline-offset: 2px;
+}
+@media (min-width: 768px) {
+  .content-card {
+    width: 12rem;
+  }
+}
+@media (min-width: 1024px) {
+  .content-card {
+    width: 14rem;
+  }
+}
+
+.content-card__image {
+  width: 100%;
+  object-fit: cover;
+}
+.content-card__image--poster {
+  aspect-ratio: 2 / 3;
+}
+.content-card__image--video {
+  aspect-ratio: 16 / 9;
+}
+
+.content-card__body {
+  padding: 0.625rem;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 0.125rem;
+}
+
+.content-card__title {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: color var(--transition-fast);
+}
+.content-card:hover .content-card__title {
+  color: var(--color-brand-red);
+}
+
+.content-card__meta {
+  font-size: 0.6875rem;
+  color: var(--color-text-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.content-card__rating {
+  font-size: 0.6875rem;
+  color: var(--color-brand-yellow);
+  margin-top: auto;
+  padding-top: 0.25rem;
+}
+
+/* ============================================================
+   9. CONTENT ROW
+   ============================================================ */
+
+.content-row {
+  margin-bottom: var(--space-row-gap);
+}
+
+.content-row__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  padding: 0 var(--space-page-x);
+}
+
+.content-row__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+@media (min-width: 768px) {
+  .content-row__title {
+    font-size: 1.375rem;
+  }
+}
+
+.content-row__scroll {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  padding-left: calc(var(--space-page-x) - 0.375rem);
+  padding-right: calc(var(--space-page-x) - 0.375rem);
+}
+
+.content-row__nav-btn {
+  padding: 0.5rem;
+  background: var(--color-bg-elevated);
+  border: none;
+  border-radius: var(--radius-full);
+  color: white;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+.content-row__nav-btn:hover {
+  background: var(--color-bg-hover);
+}
+
+/* ============================================================
+   10. FEATURED SECTION
+   ============================================================ */
+
+.featured-section {
+  position: relative;
+  height: 60vh;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 0;
+}
+@media (min-width: 768px) {
+  .featured-section {
+    height: 70vh;
+  }
+}
+
+.featured-section__gradient-b {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, black, transparent);
+  opacity: 0.85;
+}
+
+.featured-section__gradient-l {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.95), rgba(0,0,0,0.6), transparent);
+}
+
+.featured-section__content {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  height: 100%;
+  padding: 1.5rem var(--space-page-x) 2rem;
+}
+
+.featured-section__title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  max-width: 40rem;
+  line-height: 1.2;
+}
+@media (min-width: 768px) {
+  .featured-section__title {
+    font-size: 2.75rem;
+    margin-bottom: 0.75rem;
+  }
+}
+
+.featured-section__desc {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+  max-width: 32rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+@media (min-width: 768px) {
+  .featured-section__desc {
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+  }
+}
+
+/* ============================================================
+   11. BUTTONS
+   ============================================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn--primary {
+  background: white;
+  color: black;
+}
+.btn--primary:hover {
+  background: #e5e5e5;
+}
+
+.btn--secondary {
+  background: rgba(109, 109, 110, 0.7);
+  color: white;
+}
+.btn--secondary:hover {
+  background: rgba(109, 109, 110, 0.5);
+}
+
+.btn--brand {
+  background: var(--color-brand-red);
+  color: white;
+  box-shadow: var(--shadow-glow-red);
+}
+.btn--brand:hover {
+  background: var(--color-brand-red-hover);
+}
+.btn--brand:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn--google {
+  background: white;
+  color: #333;
+  border: 1px solid #dadce0;
+  font-weight: 500;
+  gap: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+.btn--google:hover {
+  background: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.16);
+}
+
+.btn--ghost {
+  background: none;
+  color: var(--color-text-secondary);
+  padding: 0.375rem 0.75rem;
+}
+.btn--ghost:hover {
+  color: var(--color-text-primary);
+}
+
+/* ============================================================
+   12. AUTH / LOGIN CARD
+   ============================================================ */
+
+.auth-wrapper {
+  min-height: calc(100vh - 150px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 26rem;
+  background: rgba(31, 41, 55, 0.85);
+  backdrop-filter: blur(16px);
+  padding: 2rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-elevated);
+}
+
+.auth-card__title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--color-text-primary);
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  color: var(--color-text-muted);
+  font-size: 0.75rem;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border-light);
+}
+
+.auth-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.375rem;
+}
+
+.auth-input {
+  width: 100%;
+  padding: 0.625rem 0.875rem;
+  background: var(--color-bg-input);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius-md);
+  color: white;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+.auth-input:focus {
+  border-color: var(--color-brand-red);
+  box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.15);
+}
+
+/* ============================================================
+   13. MODAL
+   ============================================================ */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+}
+
+.modal-panel {
+  background: var(--color-bg-elevated);
+  padding: 1.5rem;
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--color-border-light);
+  box-shadow: var(--shadow-elevated);
+  max-width: 28rem;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-panel__close {
+  color: var(--color-text-muted);
+  font-size: 1.5rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: var(--radius-sm);
+  transition: all var(--transition-fast);
+}
+.modal-panel__close:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================
+   14. OTT GRID
+   ============================================================ */
+
+.ott-grid {
+  margin-bottom: var(--space-row-gap);
+  padding: 0 var(--space-page-x);
+}
+
+.ott-grid__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+  margin-bottom: 1rem;
+}
+@media (min-width: 768px) {
+  .ott-grid__title {
+    font-size: 1.375rem;
+  }
+}
+
+.ott-grid__items {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  .ott-grid__items {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (min-width: 768px) {
+  .ott-grid__items {
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1rem;
+  }
+}
+
+.ott-grid__card {
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: all var(--transition-base);
+}
+.ott-grid__card:hover {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-elevated);
+}
+.ott-grid__card img {
+  max-height: 2.5rem;
+  width: auto;
+  object-fit: contain;
+}
+@media (min-width: 768px) {
+  .ott-grid__card img {
+    max-height: 3.5rem;
+  }
+}
+
+/* ============================================================
+   15. PAGE LAYOUTS
+   ============================================================ */
+
+.page-content {
+  padding: 1.5rem var(--space-page-x);
+}
+
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  color: var(--color-text-primary);
+}
+
+/* Space for fixed OTT header + nav */
+.ott-page-body {
+  padding-top: 3.25rem;
+}
+
+/* ============================================================
+   16. FIND PAGE FILTERS
+   ============================================================ */
+
+.find-filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.5rem;
+}
+@media (min-width: 640px) {
+  .find-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+@media (min-width: 1024px) {
+  .find-filters {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
+}
+
+/* ============================================================
+   17. PROFILE CARD (Logged-in state)
+   ============================================================ */
+
+.profile-avatar {
+  width: 5rem;
+  height: 5rem;
+  border-radius: var(--radius-full);
+  background: linear-gradient(135deg, var(--color-brand-red), var(--color-brand-orange));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 4px 16px rgba(229, 9, 20, 0.2);
+}
+
+/* ============================================================
+   18. GSAP ANIMATION HELPERS
+   ============================================================ */
+
+.page-transition-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+}
+
+/* Initial state for entrance animations */
+.gsap-fade-in {
+  opacity: 0;
+  transform: translateY(12px);
+}
+
+.gsap-scale-in {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Google icon SVG for OAuth button */
+.google-icon {
+  width: 1.125rem;
+  height: 1.125rem;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   19. UTILITIES
+   ============================================================ */
+
+.text-gradient-brand {
+  background: linear-gradient(135deg, var(--color-brand-red), var(--color-brand-orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Loading spinner */
+.spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid white;
+  border-top-color: transparent;
+  border-radius: var(--radius-full);
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Footer */
+.app-footer {
+  text-align: center;
+  padding: 1.5rem var(--space-page-x);
+  color: var(--color-text-muted);
+  font-size: 0.8125rem;
+  border-top: 1px solid var(--color-border-subtle);
+}

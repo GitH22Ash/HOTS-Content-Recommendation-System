@@ -1,5 +1,6 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { supabase, isSupabaseConfigured } from './services/supabase';
+import gsap from 'gsap';
 
 // Components
 import Navigation from './components/Navigation';
@@ -30,7 +31,6 @@ const getStoredHistory = () => {
 };
 const storeHistory = (history) => {
   try {
-    // Keep only the last 100 entries in localStorage
     localStorage.setItem(HISTORY_STORAGE_KEY, JSON.stringify(history.slice(0, 100)));
   } catch { /* localStorage might be full */ }
 };
@@ -50,6 +50,10 @@ function App() {
   const [mockMovies, setMockMovies] = useState([]);
   const [isDataLoading, setIsDataLoading] = useState(true);
 
+  // GSAP page transition ref
+  const pageRef = useRef(null);
+  const prevPageRef = useRef('Home');
+
   // Load movie data on startup
   useEffect(() => {
     getMovies()
@@ -68,22 +72,30 @@ function App() {
     storeHistory(viewHistory);
   }, [viewHistory]);
 
+  // GSAP page transition on page change
+  useEffect(() => {
+    if (pageRef.current && prevPageRef.current !== currentPage) {
+      gsap.fromTo(pageRef.current,
+        { opacity: 0, y: 10 },
+        { opacity: 1, y: 0, duration: 0.35, ease: 'power2.out' }
+      );
+      prevPageRef.current = currentPage;
+    }
+  }, [currentPage]);
+
   // --- Supabase Auth State Listener ---
   useEffect(() => {
     if (!isSupabaseConfigured()) {
-      // No Supabase configured — run in offline/guest mode
       setCurrentUserId('guest-' + Date.now());
       setIsAuthReady(true);
       return;
     }
 
-    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setCurrentUserId(session.user.id);
         setUserEmail(session.user.email || null);
       } else {
-        // Sign in anonymously for guest users
         supabase.auth.signInAnonymously().catch(err => {
           console.error("Anonymous sign-in failed:", err);
         });
@@ -91,7 +103,6 @@ function App() {
       setIsAuthReady(true);
     });
 
-    // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       if (session?.user) {
         setCurrentUserId(session.user.id);
@@ -135,7 +146,6 @@ function App() {
         ...extraData,
       };
 
-      // Store to Supabase if configured
       if (isSupabaseConfigured()) {
         supabase.from('view_history').insert([{
           user_id: currentUserId,
@@ -149,7 +159,6 @@ function App() {
         });
       }
 
-      // Always update local state + localStorage
       setViewHistory(prev => [interactionData, ...prev]);
     } catch (error) {
       console.error("Failed to save interaction:", error);
@@ -206,10 +215,9 @@ function App() {
       case 'SettingsPage': return <SettingsPage viewHistory={viewHistory} currentUserId={currentUserId} userEmail={userEmail} />;
       case 'NetflixPage': return <NetflixPage {...pageProps} />;
       case 'YouTubePage': return <YouTubePage {...pageProps} />;
-      case 'HuluPage': return <GenericOttPage {...pageProps} platformName="Hulu" />;
+      case 'JioHotstarPage': return <GenericOttPage {...pageProps} platformName="JioHotstar" />;
       case 'PrimePage': return <GenericOttPage {...pageProps} platformName="Prime Video" />;
       case 'DisneyPlusPage': return <GenericOttPage {...pageProps} platformName="Disney+" />;
-      case 'HotstarPage': return <GenericOttPage {...pageProps} platformName="Hotstar" />;
       case 'HotsPage': return <HotsPage onItemClick={handleItemClick} handleInteraction={handleInteraction} setCurrentPage={setCurrentPage} likedItems={likedItems} mockMovies={mockMovies} />;
       default: return <HomePage viewHistory={viewHistory} onItemClick={handleItemClick} featuredContent={featuredContent} onPlatformClick={handleAppIconClick} mockMovies={mockMovies} />;
     }
@@ -219,7 +227,7 @@ function App() {
     return (
       <div className="bg-black min-h-screen flex flex-col items-center justify-center text-white">
         <div className="relative w-16 h-16 mb-6">
-          <div className="absolute inset-0 rounded-full border-4 border-gray-700"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-gray-800"></div>
           <div className="absolute inset-0 rounded-full border-4 border-t-red-500 animate-spin"></div>
         </div>
         <p className="text-xl font-medium text-gray-300">Loading HOTS</p>
@@ -229,7 +237,7 @@ function App() {
   }
 
   return (
-    <div className="bg-black min-h-screen text-gray-100 font-sans">
+    <div className="bg-black min-h-screen text-gray-100" style={{ fontFamily: 'var(--font-primary)' }}>
       <Navigation
         currentPage={currentPage}
         setCurrentPage={setCurrentPage}
@@ -238,7 +246,7 @@ function App() {
         onProfileClick={() => setCurrentPage('Login')}
         showNotificationModal={showNotificationModal}
       />
-      <main className="pb-12">
+      <main ref={pageRef}>
         {renderPage()}
       </main>
       <Modal
@@ -249,8 +257,8 @@ function App() {
       >
         {modalMessage}
       </Modal>
-      <footer className="text-center p-6 text-gray-500 text-sm border-t border-gray-800">
-        HOTS-Content Recommendation System
+      <footer className="app-footer">
+        HOTS — Content Recommendation System
       </footer>
     </div>
   );
