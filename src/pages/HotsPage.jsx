@@ -33,14 +33,39 @@ const HotsPage = React.memo(({ onItemClick, handleInteraction, setCurrentPage, l
             const videos = response.data?.videos || [];
             const trailer = videos.find(v => v.type === 'Trailer') || videos[0];
 
-            setTrailerCache(prev => ({
-                ...prev,
-                [movieId]: trailer?.key || false,
-            }));
+            if (trailer?.key) {
+                setTrailerCache(prev => ({
+                    ...prev,
+                    [movieId]: trailer.key,
+                }));
+            } else {
+                // Fallback: use YouTube search embed with the movie title
+                const movie = shuffledMovies.find(m => String(m.id) === String(movieId));
+                if (movie) {
+                    const searchQuery = encodeURIComponent(`${movie.title} Official Trailer`);
+                    // YouTube supports embedding search results via a special URL
+                    setTrailerCache(prev => ({
+                        ...prev,
+                        [movieId]: `SEARCH:${searchQuery}`,
+                    }));
+                } else {
+                    setTrailerCache(prev => ({ ...prev, [movieId]: false }));
+                }
+            }
         } catch {
-            setTrailerCache(prev => ({ ...prev, [movieId]: false }));
+            // On error, also try the search fallback
+            const movie = shuffledMovies.find(m => String(m.id) === String(movieId));
+            if (movie) {
+                const searchQuery = encodeURIComponent(`${movie.title} Official Trailer`);
+                setTrailerCache(prev => ({
+                    ...prev,
+                    [movieId]: `SEARCH:${searchQuery}`,
+                }));
+            } else {
+                setTrailerCache(prev => ({ ...prev, [movieId]: false }));
+            }
         }
-    }, [trailerCache]);
+    }, [trailerCache, shuffledMovies]);
 
     // IntersectionObserver to detect active card
     useEffect(() => {

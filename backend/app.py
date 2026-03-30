@@ -126,55 +126,93 @@ def trending():
         return jsonify({"error": "An internal server error occurred"}), 500
 
 
-# --- YouTube Search Trailer Endpoint ---
+# --- YouTube Search Trailer Endpoint (zero extra dependencies) ---
+import re
+import urllib.parse
+
+# In-memory cache to avoid repeated YouTube searches
+_trailer_cache = {}
+
+def _search_youtube(query, max_retries=2):
+    """
+    Search YouTube using a plain HTTP GET request and extract video IDs
+    from the HTML response via regex. No API key or extra package needed.
+    """
+    encoded_query = urllib.parse.quote_plus(query)
+    url = f"https://www.youtube.com/results?search_query={encoded_query}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                       "(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept-Language": "en-US,en;q=0.9",
+    }
+
+    for attempt in range(max_retries):
+        try:
+            resp = requests.get(url, headers=headers, timeout=8)
+            if resp.status_code == 200:
+                # YouTube embeds video IDs in the HTML as /watch?v=VIDEO_ID
+                video_ids = re.findall(r'watch\?v=([a-zA-Z0-9_-]{11})', resp.text)
+                # De-duplicate while preserving order
+                seen = set()
+                unique_ids = []
+                for vid in video_ids:
+                    if vid not in seen:
+                        seen.add(vid)
+                        unique_ids.append(vid)
+                return unique_ids[:5]  # Return top 5 unique results
+        except Exception as e:
+            logger.warning(f"YouTube search attempt {attempt+1} failed: {e}")
+    return []
+
+
 @app.route('/api/trailers/<int:movie_id>', methods=['GET'])
 def get_trailers(movie_id):
     """
-    Endpoint to fetch movie trailers from YouTube directly, bypassing TMDB.
+    Fetch a movie trailer from YouTube by searching for the movie title.
+    Uses only the requests library (already installed) — no TMDB, no extra packages.
     """
     try:
-        from youtubesearchpython import VideosSearch
-        
-        # Step 1: Lookup the movie title from the loaded dataset
+        # Check cache first
+        if movie_id in _trailer_cache:
+            return jsonify({"videos": _trailer_cache[movie_id], "movie_id": movie_id})
+
         if database_df is None:
             return jsonify({"error": "Database not loaded", "videos": []}), 503
 
-        # Safe search by converting both ids to strings
+        # Lookup the movie title from the loaded dataset
         matches = database_df[database_df['id'].astype(str) == str(movie_id)]
-        
+
         if matches.empty:
             logger.warning(f"Movie ID {movie_id} not found in local database.")
             return jsonify({"error": "Movie not found", "videos": []}), 404
-            
+
         movie_title = matches.iloc[0]['title']
         search_query = f"{movie_title} Official Trailer"
-        
-        # Step 2: Extract top video via YoutubeSearch
-        videos_search = VideosSearch(search_query, limit=1)
-        results = videos_search.result()
-        videos_list = results.get('result', [])
-        
-        if not videos_list:
-            logger.warning(f"No YouTube trailers found for '{search_query}'.")
+
+        logger.info(f"Searching YouTube for: {search_query}")
+        video_ids = _search_youtube(search_query)
+
+        if not video_ids:
+            logger.warning(f"No YouTube results for '{search_query}'.")
+            _trailer_cache[movie_id] = []
             return jsonify({"videos": [], "movie_id": movie_id})
-            
-        top_video = videos_list[0]
-        
-        # Return identically formatted JSON schema for the React frontend
-        trailer = {
-            "key": top_video.get('id'),
-            "name": top_video.get('title', "Trailer"),
+
+        # Build response matching the schema the React frontend expects
+        trailers = [{
+            "key": video_ids[0],
+            "name": f"{movie_title} - Official Trailer",
             "type": "Trailer",
             "site": "YouTube"
-        }
-        
-        return jsonify({"videos": [trailer], "movie_id": movie_id})
-        
-    except ImportError:
-        logger.error("youtube-search-python is not installed. Please run pip install youtube-search-python")
-        return jsonify({"error": "youtube search module missing", "videos": []}), 500
+        }]
+
+        # Cache the result
+        _trailer_cache[movie_id] = trailers
+        logger.info(f"Found trailer for '{movie_title}': {video_ids[0]}")
+
+        return jsonify({"videos": trailers, "movie_id": movie_id})
+
     except Exception as e:
-        logger.error(f"Error fetching YouTube trailers for {movie_id}: {e}")
+        logger.error(f"Error fetching YouTube trailers for {movie_id}: {e}", exc_info=True)
         return jsonify({"videos": [], "movie_id": movie_id})
 
 

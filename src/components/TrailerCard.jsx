@@ -17,6 +17,19 @@ const TrailerCard = React.memo(({ item, isActive, isLiked, trailerKey, onLike, o
     // Build YouTube embed URL with autoplay params
     const getYouTubeEmbedUrl = useCallback(() => {
         if (!trailerKey) return null;
+
+        // Handle search-based fallback: open a YouTube search results embed
+        if (trailerKey.startsWith('SEARCH:')) {
+            const query = trailerKey.replace('SEARCH:', '');
+            const params = new URLSearchParams({
+                autoplay: isActive ? '1' : '0',
+                mute: isMuted ? '1' : '0',
+                playsinline: '1',
+            });
+            return `https://www.youtube-nocookie.com/embed?listType=search&list=${decodeURIComponent(query)}&${params.toString()}`;
+        }
+
+        // Normal direct video ID embed
         const params = new URLSearchParams({
             autoplay: isActive ? '1' : '0',
             mute: isMuted ? '1' : '0',
@@ -34,9 +47,15 @@ const TrailerCard = React.memo(({ item, isActive, isLiked, trailerKey, onLike, o
     }, [trailerKey, isActive, isMuted]);
 
     const handleShare = useCallback(() => {
-        const shareUrl = trailerKey
-            ? `https://www.youtube.com/watch?v=${trailerKey}`
-            : `Movie: ${item.title}`;
+        let shareUrl;
+        if (trailerKey && trailerKey.startsWith('SEARCH:')) {
+            const query = trailerKey.replace('SEARCH:', '');
+            shareUrl = `https://www.youtube.com/results?search_query=${query}`;
+        } else if (trailerKey) {
+            shareUrl = `https://www.youtube.com/watch?v=${trailerKey}`;
+        } else {
+            shareUrl = `Movie: ${item.title}`;
+        }
 
         if (navigator.share) {
             navigator.share({
