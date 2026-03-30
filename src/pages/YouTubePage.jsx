@@ -10,6 +10,7 @@ const YouTubePage = React.memo(({ onItemClick, setCurrentPage, mockMovies }) => 
     const [searchTerm, setSearchTerm] = useState('');
     const [searchOpen, setSearchOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('all categories');
+    const [filtersOpen, setFiltersOpen] = useState(false);
     const searchInputRef = useRef(null);
 
     const GLOBAL_GENRES = useMemo(() => ['All Genres', ...getUniqueItems(mockMovies, 'genre')], [mockMovies]);
@@ -65,15 +66,15 @@ const YouTubePage = React.memo(({ onItemClick, setCurrentPage, mockMovies }) => 
                             {searchOpen ? <X size={14} /> : <Search size={14} />}
                         </button>
                     </div>
+                    <button onClick={() => setFiltersOpen(!filtersOpen)} className={`ott-action-btn ${filtersOpen ? 'ott-action-btn--active' : ''}`}>
+                        <SlidersHorizontal size={14} /> <span className="hidden sm:inline">Filters</span>
+                    </button>
                     <button onClick={() => setCurrentPage('Home')} className="ott-back-btn">
                         <span className="flex items-center gap-1"><ArrowLeft size={14} /> Home</span>
                     </button>
                 </div>
-            </div>
-
-            {/* Content */}
-            <div className="ott-page-body">
                 <PlatformFilters
+                    isOpen={filtersOpen}
                     selectedGenre={selectedCategory}
                     setSelectedGenre={setSelectedCategory}
                     selectedLanguage={"all languages"}
@@ -82,6 +83,10 @@ const YouTubePage = React.memo(({ onItemClick, setCurrentPage, mockMovies }) => 
                     genres={GLOBAL_GENRES}
                     languages={GLOBAL_LANGUAGES}
                 />
+            </div>
+
+            {/* Content */}
+            <div className="ott-page-body">
                 {youtubeFeatured && (
                     <div className="page-content">
                         <h2 className="text-2xl font-bold mb-4">{youtubeFeatured.title}</h2>

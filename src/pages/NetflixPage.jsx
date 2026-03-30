@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useCallback } from 'react';
-import { Search, X, ArrowLeft } from 'lucide-react';
+import { Search, X, ArrowLeft, SlidersHorizontal } from 'lucide-react';
 import PlatformFilters from '../components/PlatformFilters';
 import FeaturedSection from '../components/FeaturedSection';
 import ContentRow from '../components/ContentRow';
@@ -13,6 +13,7 @@ const NetflixPage = React.memo(({ onItemClick, setCurrentPage, mockMovies }) => 
     const [searchOpen, setSearchOpen] = useState(false);
     const [selectedGenre, setSelectedGenre] = useState('all genres');
     const [selectedLanguage, setSelectedLanguage] = useState('all languages');
+    const [filtersOpen, setFiltersOpen] = useState(false);
     const searchInputRef = useRef(null);
 
     const genresForFilter = useMemo(() => ['All Genres', ...getUniqueItems(mockMovies, 'genre')], [mockMovies]);
@@ -75,15 +76,15 @@ const NetflixPage = React.memo(({ onItemClick, setCurrentPage, mockMovies }) => 
                             {searchOpen ? <X size={14} /> : <Search size={14} />}
                         </button>
                     </div>
+                    <button onClick={() => setFiltersOpen(!filtersOpen)} className={`ott-action-btn ${filtersOpen ? 'ott-action-btn--active' : ''}`}>
+                        <SlidersHorizontal size={14} /> <span className="hidden sm:inline">Filters</span>
+                    </button>
                     <button onClick={() => setCurrentPage('Home')} className="ott-back-btn">
                         <span className="flex items-center gap-1"><ArrowLeft size={14} /> Home</span>
                     </button>
                 </div>
-            </div>
-
-            {/* Content */}
-            <div className="ott-page-body">
                 <PlatformFilters
+                    isOpen={filtersOpen}
                     selectedGenre={selectedGenre}
                     setSelectedGenre={setSelectedGenre}
                     selectedLanguage={selectedLanguage}
@@ -92,6 +93,10 @@ const NetflixPage = React.memo(({ onItemClick, setCurrentPage, mockMovies }) => 
                     genres={genresForFilter}
                     languages={languagesForFilter}
                 />
+            </div>
+
+            {/* Content */}
+            <div className="ott-page-body">
                 <FeaturedSection item={netflixFeatured} onItemClick={onItemClick} />
                 <div style={{ padding: '0' }}>
                     {netflixOriginals.length > 0 && <ContentRow title="Netflix Originals" items={netflixOriginals} onItemClick={onItemClick} />}

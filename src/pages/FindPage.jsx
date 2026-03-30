@@ -76,7 +76,7 @@ const FindPage = React.memo(({ onItemClick, mockMovies }) => {
 
             <div className="find-filters">
                 <div>
-                    <label htmlFor="moodFilter" className="filter-label flex items-center gap-1.5">
+                    <label htmlFor="moodFilter" className="filter-label">
                         <Sparkles size={13} className="text-yellow-300" /> How are you feeling?
                     </label>
                     <select id="moodFilter" value={selectedMood} onChange={(e) => setSelectedMood(e.target.value)} className="filter-select">

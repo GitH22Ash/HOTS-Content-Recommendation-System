@@ -93,9 +93,9 @@ export const featuredContentDefault = {
 export const mockLiveChannels = [ { id: 'live1', name: 'News Now', currentShow: 'Evening News Bulletin', genre: 'News', logo: 'https://placehold.co/100x60/FF6347/FFFFFF?text=News', type: 'live'} ];
 
 export const ottPlatforms = [
-  { id: 'netflix', name: 'Netflix', logoUrl: 'https://placehold.co/150x80/E50914/FFFFFF?text=NETFLIX&font=Inter', page: 'NetflixPage', themeColor: 'bg-[#E50914]' },
-  { id: 'prime', name: 'Prime Video', logoUrl: 'https://placehold.co/150x80/00A8E1/FFFFFF?text=Prime+Video&font=Inter', page: 'PrimePage', themeColor: 'bg-[#00A8E1]' },
-  { id: 'youtube', name: 'YouTube', logoUrl: 'https://placehold.co/150x80/FF0000/FFFFFF?text=YouTube&font=Inter', page: 'YouTubePage', themeColor: 'bg-[#FF0000]' },
-  { id: 'jiohotstar', name: 'JioHotstar', logoUrl: 'https://placehold.co/150x80/0c2f6e/FFFFFF?text=JioHotstar&font=Inter', page: 'JioHotstarPage', themeColor: 'bg-[#0c2f6e]' },
-  { id: 'disneyplus', name: 'Disney+', logoUrl: 'https://placehold.co/150x80/001E62/FFFFFF?text=Disney%2B&font=Inter', page: 'DisneyPlusPage', themeColor: 'bg-[#001E62]' },
+  { id: 'netflix', name: 'Netflix', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg', page: 'NetflixPage', themeColor: 'bg-[#E50914]' },
+  { id: 'prime', name: 'Prime Video', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/1/11/Amazon_Prime_Video_logo.svg', page: 'PrimePage', themeColor: 'bg-[#00A8E1]' },
+  { id: 'youtube', name: 'YouTube', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/b/b8/YouTube_Logo_2017.svg', page: 'YouTubePage', themeColor: 'bg-[#FF0000]' },
+  { id: 'jiohotstar', name: 'JioHotstar', logoUrl: 'https://placehold.co/180x60/transparent/FFFFFF?text=JioHotstar&font=Inter', page: 'JioHotstarPage', themeColor: 'bg-[#0c2f6e]' },
+  { id: 'disneyplus', name: 'Disney+', logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/3/3e/Disney%2B_logo.svg', page: 'DisneyPlusPage', themeColor: 'bg-[#001E62]' },
 ];

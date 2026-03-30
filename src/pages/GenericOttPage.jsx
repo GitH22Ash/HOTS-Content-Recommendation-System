@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useRef, useCallback } from 'react';
-import { Search, X, ArrowLeft } from 'lucide-react';
+import { Search, X, ArrowLeft, SlidersHorizontal } from 'lucide-react';
 import { ottPlatforms, featuredContentDefault } from '../data/mockData';
 import PlatformFilters from '../components/PlatformFilters';
 import FeaturedSection from '../components/FeaturedSection';
@@ -12,6 +12,7 @@ const GenericOttPage = React.memo(({ onItemClick, platformName, setCurrentPage, 
     const [searchOpen, setSearchOpen] = useState(false);
     const [selectedGenre, setSelectedGenre] = useState('all genres');
     const [selectedLanguage, setSelectedLanguage] = useState('all languages');
+    const [filtersOpen, setFiltersOpen] = useState(false);
     const [activeCategory, setActiveCategory] = useState('all');
     const searchInputRef = useRef(null);
 
@@ -90,15 +91,15 @@ const GenericOttPage = React.memo(({ onItemClick, platformName, setCurrentPage, 
                             {searchOpen ? <X size={14} /> : <Search size={14} />}
                         </button>
                     </div>
+                    <button onClick={() => setFiltersOpen(!filtersOpen)} className={`ott-action-btn ${filtersOpen ? 'ott-action-btn--active' : ''}`}>
+                        <SlidersHorizontal size={14} /> <span className="hidden sm:inline">Filters</span>
+                    </button>
                     <button onClick={() => setCurrentPage('Home')} className="ott-back-btn">
                         <span className="flex items-center gap-1"><ArrowLeft size={14} /> Home</span>
                     </button>
                 </div>
-            </div>
-
-            {/* Content */}
-            <div className="ott-page-body">
                 <PlatformFilters
+                    isOpen={filtersOpen}
                     selectedGenre={selectedGenre}
                     setSelectedGenre={setSelectedGenre}
                     selectedLanguage={selectedLanguage}
@@ -107,6 +108,10 @@ const GenericOttPage = React.memo(({ onItemClick, platformName, setCurrentPage, 
                     genres={genresForFilter}
                     languages={languagesForFilter}
                 />
+            </div>
+
+            {/* Content */}
+            <div className="ott-page-body">
                 <FeaturedSection item={platformFeatured} onItemClick={onItemClick} />
                 <div style={{ padding: '0' }}>
                     {activeCategory === 'all' && (
