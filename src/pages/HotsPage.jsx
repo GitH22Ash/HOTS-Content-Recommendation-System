@@ -39,31 +39,10 @@ const HotsPage = React.memo(({ onItemClick, handleInteraction, setCurrentPage, l
                     [movieId]: trailer.key,
                 }));
             } else {
-                // Fallback: use YouTube search embed with the movie title
-                const movie = shuffledMovies.find(m => String(m.id) === String(movieId));
-                if (movie) {
-                    const searchQuery = encodeURIComponent(`${movie.title} Official Trailer`);
-                    // YouTube supports embedding search results via a special URL
-                    setTrailerCache(prev => ({
-                        ...prev,
-                        [movieId]: `SEARCH:${searchQuery}`,
-                    }));
-                } else {
-                    setTrailerCache(prev => ({ ...prev, [movieId]: false }));
-                }
-            }
-        } catch {
-            // On error, also try the search fallback
-            const movie = shuffledMovies.find(m => String(m.id) === String(movieId));
-            if (movie) {
-                const searchQuery = encodeURIComponent(`${movie.title} Official Trailer`);
-                setTrailerCache(prev => ({
-                    ...prev,
-                    [movieId]: `SEARCH:${searchQuery}`,
-                }));
-            } else {
                 setTrailerCache(prev => ({ ...prev, [movieId]: false }));
             }
+        } catch {
+            setTrailerCache(prev => ({ ...prev, [movieId]: false }));
         }
     }, [trailerCache, shuffledMovies]);
 

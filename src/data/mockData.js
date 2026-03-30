@@ -10,6 +10,12 @@ const platformNameMapping = {
 
 const parseJsonString = (jsonString, keyToExtract = 'name', maxItems = 3) => {
     if (!jsonString || typeof jsonString !== 'string') return 'N/A';
+    
+    const trimmed = jsonString.trim();
+    if (!trimmed.startsWith('[') && !trimmed.startsWith('{')) {
+        return jsonString;
+    }
+
     try {
         const correctedJsonString = jsonString.replace(/'/g, '"');
         const items = JSON.parse(correctedJsonString);
